@@ -1,0 +1,80 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    background: #ffd966;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 20px 30px;
+    box-sizing: border-box;
+}
+
+.movie-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 0 20px 0;
+}
+
+.table-wrapper {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+}
+
+td {
+    border: 1px solid #e6b800;
+    background-color: #fffbe6;
+    font-size: 1em;
+    padding: 8px 10px;
+    vertical-align: top;
+}
+
+td.label {
+    width: 140px;
+    font-weight: bold;
+    color: #232323;
+    background-color: #ffd966;
+}
+
+.back-btn {
+    font-size: 1em;
+    padding: 8px 24px;
+    background: linear-gradient(to bottom, #d9ead3, #b6d7a8 40%, #6aa84f 100%);
+    color: #232323;
+    border: 2px solid #999;
+    border-radius: 7px;
+    box-shadow: 2px 2px 7px #aaa;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.back-btn:hover {
+    background: linear-gradient(to bottom, #b6d7a8, #6aa84f 90%, #274e13 100%);
+}
+
+.back-btn-wrapper {
+    text-align: right;
+    margin-top: 8px;
+}
+
+@media screen and (max-width: 600px) {
+    td, td.label {
+        font-size: 0.9em;
+        padding: 6px 4px;
+    }
+    .back-btn {
+        font-size: 0.9em;
+        padding: 6px 16px;
+    }
+}

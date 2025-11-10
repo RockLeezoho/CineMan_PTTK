@@ -1,0 +1,176 @@
+.mt-8 { margin-top: 2rem; }
+.text-center { text-align: center; }
+.text-sm { font-size: 0.875rem; }
+.text-red-500 { color: #ef4444; }
+.hover-underline:hover { text-decoration: underline; }
+.cursor-pointer { cursor: pointer; }
+
+/* Layout chính */
+body { min-height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; background: #f5f6fa; font-family: Arial, sans-serif; }
+.login-card { background: #ffde7d; padding: 2.5rem 2rem 2rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(30,60,114,0.18); width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; }
+.login-title { color: #222; font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem; margin-top: 0.5rem; }
+.note { color: #222; font-size: 1rem; text-align: center; margin-bottom: 1.5rem; }
+form { width: 100%; display: flex; flex-direction: column; align-items: stretch; }
+
+/* base form card (you may already have similar rules in styles.css) */
+.login-card {
+  max-width: 1100px;
+  margin: 28px auto;
+  padding: 20px;
+  background: #ffd966;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(20,20,20,0.06);
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+/* grid for form fields */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* mobile: single column */
+  gap: 12px 18px;
+  align-items: start;
+}
+
+/* each field group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* inline options (radio) */
+.inline-options { display:flex; gap:12px; align-items:center; }
+
+/* password wrapper and toggle button */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.password-wrapper .form-control {
+  width: 100%;
+  padding-right: 44px;
+}
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  height: 34px;
+  width: 36px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  color:#666;
+}
+/* indicator style when visible */
+.toggle-password.visible {
+  color: #e74c3c;
+}
+
+/* action area spans full width */
+.form-actions {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+/* field error */
+.field-error {
+  color: #e74c3c;
+  display: none;
+  font-size: 13px;
+}
+
+/* button */
+.btn-register {
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Responsive: on larger screens show two columns and label+input side-by-side */
+@media (min-width: 880px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 22px;
+  }
+  /* Make label and input appear in one row for each form-group on wide screens */
+  .form-group {
+    flex-direction: row;
+    align-items: center;
+  }
+  .form-group .form-label {
+    width: 160px;
+    margin: 0;
+    font-weight: 600;
+    color: #333;
+  }
+  .form-group .form-control {
+    flex: 1;
+  }
+  /* For the full-width actions row, ensure it spans both columns (set in markup) */
+  .form-actions { flex-direction: column; align-items:center; }
+}
+
+/* Small tweaks */
+.form-label { font-size: 14px; color:#444; }
+.form-control {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e6e6e6;
+  font-size: 14px;
+}
+
+/* accessibility focus */
+.form-control:focus, .toggle-password:focus, .btn-register:focus {
+  outline: 3px solid rgba(231,76,60,0.12);
+  outline-offset: 2px;
+}
+
+/* Radio options */
+.option { margin-right: 0.75rem; display: inline-flex; align-items: center; gap: 0.35rem; }
+
+/* Button */
+.btn-register { background: #28a745; color: #fff; border: none; border-radius: 8px; padding: 0.7rem 0; font-size: 1.05rem; font-weight: 600; cursor: pointer; width: 10%; margin-top: 0.5rem; transition: background 0.15s; }
+.btn-register:hover { background: #218838; }
+
+/* Error message */
+.error { color: #b91c1c; font-size: 0.95rem; margin: 0 0 1rem 0; padding: 0.5rem 0.6rem; background: #fff3f3; border-radius: 6px; border: 1px solid rgba(185,28,28,0.12); }
+.field-error { color: #b91c1c; font-size: 0.85rem; margin-top: -0.6rem; margin-bottom: 0.6rem; display: none; }
+
+/* Small helper */
+.small { font-size: 0.9rem; color: #374151; }
+
+/* Small styles for password toggle */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.password-wrapper .form-control {
+  padding-right: 44px; /* space for the eye button */
+}
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  height: 32px;
+  width: 36px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  color: #666;
+  border-radius: 6px;
+}
+.toggle-password:focus { outline: 2px solid rgba(0,0,0,0.06); }
+.toggle-password svg { width:18px; height:18px; pointer-events:none; }

@@ -1,0 +1,184 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    background: #ffd966;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 20px 30px;
+    box-sizing: border-box;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+}
+
+.search-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    height: 20px;
+    font-size: 0.9em;
+    padding: 7px 16px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    width: 450px;
+    outline: none;
+}
+
+.search-btn {
+    font-size: 0.9em;
+    padding: 6px 20px;
+    background: linear-gradient(90deg, #b6d7a8 0%, #6aa84f 100%);
+    color: #232323;
+    border: 2px solid #999;
+    border-radius: 7px;
+    box-shadow: 2px 2px 7px #aaa;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.search-btn:hover {
+    background: linear-gradient(90deg, #6aa84f 0%, #b6d7a8 100%);
+}
+
+.table-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #232323;
+    text-align: left;
+    margin: 0 0 6px 0;
+}
+
+.table-wrapper {
+    width: 100%;
+    margin-bottom: 16px;
+    table-layout: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 600px;
+}
+
+th, td {
+    border: 1px solid #e6b800;
+    padding: 10px 8px;
+    text-align: center;
+    background-color: #fffbe6;
+    font-size: 0.9em;
+}
+
+th {
+    background-color: #ffd966;
+    color: #232323;
+    font-weight: bold;
+    text-align: center;
+}
+
+table td:nth-child(2),
+table td:nth-child(3) {
+  text-align: left;
+}
+table td:not(:nth-child(2)):not(:nth-child(3)) {
+  text-align: center;
+}
+
+th:nth-child(4), td:nth-child(4),  /* Độ tuổi */
+th:nth-child(5), td:nth-child(5),  /* Thời lượng */
+th:nth-child(6), td:nth-child(6){ /* Khởi chiếu */
+  width: 10%;
+}
+th:nth-child(2), td:nth-child(2){ /* Khởi chiếu */
+  width: 35%;
+}
+
+.detail-lnk i {
+  font-size: 17px;
+  color: #007bff !important;;
+}
+
+.detail-lnk:hover i {
+  color: #000000 !important;; /* màu khi rê chuột (có thể giữ nguyên #232323 nếu muốn) */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 10px 0;
+}
+
+.pagination-btn {
+    border: none;
+    background: #fff;
+    color: #232323;
+    font-size: 1em;
+    padding: 3px 12px;
+    border-radius: 4px;
+    box-shadow: 1px 1px 4px #ddd;
+    cursor: pointer;
+    transition: background 0.14s;
+}
+
+.pagination-btn:disabled {
+    background: #eee;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.page-number {
+    font-weight: bold;
+    padding: 0 8px;
+}
+.pager-left{font-size:16px; }
+.pager-center{
+font-size:16px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:center;
+  flex:1;
+}
+
+#pageSize {
+    font-size: 0.8em;    /* tăng size chữ */
+    padding: 4px 10px;   /* tăng padding để dropdown cao hơn */
+    border-radius: 6px;  /* bo góc đẹp */
+    border: 1px solid #aaa;
+    outline: none;
+    min-width: 70px;     /* chiều ngang tối thiểu */
+}
+
+#pageSize label{
+    font-size: 0.8em;    /* tăng size chữ */
+}
+
+.pager-right{ display:flex; align-items:center; gap:10px; font-size:18px; }
+@media screen and (max-width: 600px) {
+    th, td {
+        font-size: 0.9em;
+        padding: 6px 4px;
+    }
+
+    .search-input, .search-btn{
+        font-size: 0.8em;
+        padding: 6px 12px;
+    }
+}
