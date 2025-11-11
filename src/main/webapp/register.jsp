@@ -1,25 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%!
-    // simple HTML escape helper
-    public static String escapeHtml(String s){
-        if (s == null) return "";
-        StringBuilder sb = new StringBuilder(s.length());
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            switch (c) {
-                case '&': sb.append("&amp;"); break;
-                case '<': sb.append("&lt;"); break;
-                case '>': sb.append("&gt;"); break;
-                case '"': sb.append("&quot;"); break;
-                case '\'': sb.append("&#x27;"); break;
-                default: sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-%>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,7 +22,7 @@
         String error = (String) request.getAttribute("error");
         if (error != null && !error.isBlank()) {
     %>
-        <div id="errorBox" class="error" role="alert" aria-live="polite"><%= escapeHtml(error) %></div>
+        <div id="errorBox" class="error" role="alert" aria-live="polite"><%= StringEscapeUtils.escapeHtml4(error) %></div>
     <%
         }
     %>

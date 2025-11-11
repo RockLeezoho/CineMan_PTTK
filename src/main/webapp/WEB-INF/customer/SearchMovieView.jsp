@@ -1,22 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.*, com.example.cineman.model.Movie, java.time.LocalDate, java.time.format.DateTimeFormatter" %>
-<%!
-    private static String escapeHtml(String s) {
-        if (s == null) return "";
-        StringBuilder out = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            switch (c) {
-                case '<': out.append("&lt;"); break;
-                case '>': out.append("&gt;"); break;
-                case '&': out.append("&amp;"); break;
-                case '"': out.append("&quot;"); break;
-                case '\'': out.append("&#x27;"); break;
-                default: out.append(c);
-            }
-        }
-        return out.toString();
-    }
-%>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <!DOCTYPE html>
 <html>
 <head>

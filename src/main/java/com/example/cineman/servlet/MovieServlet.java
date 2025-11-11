@@ -88,7 +88,22 @@ public class MovieServlet extends HttpServlet {
                     break;
 
                 case "selectMovie":
-                    req.setAttribute("movieList", movieDAO.getAvailableMovieList());
+                    long totalAvailableMovie = movieDAO.countAvailableMovie(); // nếu chưa có, fallback bên dưới
+                    int totalPagesMovie = (totalAvailableMovie == 0) ? 0 : (int) Math.ceil((double) totalAvailableMovie / pageSize);
+
+                    long offsetMovie = (long) (page - 1) * pageSize;
+                    if (offsetMovie < 0) offsetMovie = 0L;
+                    if (totalPagesMovie > 0 && page > totalPagesMovie) page = totalPagesMovie;
+
+                    List<Movie> movieAvailableList = movieDAO.getAvailableMovieList(offsetMovie, pageSize);
+
+                    System.out.println("Total available movie pages: " + totalPagesMovie);
+
+                    req.setAttribute("movieAvailableList", movieAvailableList);
+                    req.setAttribute("totalAvailableMovie", totalAvailableMovie);
+                    req.setAttribute("currentPage", page);
+                    req.setAttribute("pageSize", pageSize);
+                    req.setAttribute("totalPages", Math.max(1, totalPagesMovie));
                     req.getRequestDispatcher("/WEB-INF/manager/SelectMovieView.jsp").forward(req, resp);
                     break;
 
@@ -131,9 +146,9 @@ public class MovieServlet extends HttpServlet {
                     break;
 
                 default: // list / now showing with pagination
-                    long totalMovie = movieDAO.getNowShowingMovieCount();
-                    System.out.println(totalMovie);
-                    int totalPages = (totalMovie == 0) ? 0 : (int) Math.ceil((double) totalMovie / pageSize);
+                    long totalNowShowingMovie = movieDAO.countNowShowingMovie();
+
+                    int totalPages = (totalNowShowingMovie == 0) ? 0 : (int) Math.ceil((double) totalNowShowingMovie / pageSize);
                     long offset = (long) (page - 1) * pageSize;
                     if (offset < 0) offset = 0L;
                     if (totalPages > 0 && page > totalPages) page = totalPages;
@@ -141,7 +156,7 @@ public class MovieServlet extends HttpServlet {
                     List<Movie> nowShowingMovieList = movieDAO.getNowShowingMovieList(offset, pageSize);
 
                     req.setAttribute("movieList", nowShowingMovieList);
-                    req.setAttribute("total", totalMovie);
+                    req.setAttribute("total", totalNowShowingMovie);
                     req.setAttribute("currentPage", page);
                     req.setAttribute("pageSize", pageSize);
                     req.setAttribute("totalPages", Math.max(1, totalPages));

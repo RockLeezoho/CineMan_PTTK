@@ -34,10 +34,10 @@ html, body {
     transition: opacity 0.5s;
 }
 .movie-table-title {
-    font-size: 23px;
+    font-size: 1.2em;
     font-weight: bold;
     color: #232323;
-    margin: 24px 0 10px 0;
+    margin: 10px 0 10px 0;
     text-align: center;
 }
 .movie-table {
@@ -56,6 +56,12 @@ html, body {
     background: #ffd966;
     color: #232323;
     font-weight: bold;
+}
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 .btn-choose-movie {
    background: linear-gradient(to right, #6aa84f 30%, #e6e6e6 100%);
@@ -114,9 +120,55 @@ html, body {
     text-align: center;
     display: inline-block;
     float: right;
+    margin-top: 0px;
 }
 .btn-cancel-movie:hover {
     background: linear-gradient(to bottom, #b6d7a8, #6aa84f 90%, #274e13 100%);
     box-shadow: 2px 3px 16px #aaa;
     color: #232323;
+}
+
+/*pagination styles*/
+.pager-left{font-size:16px; }
+.pager-center{
+font-size:16px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:center;
+  flex:1;
+}
+.pager-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:18px;
+}
+
+#pageSize {
+    font-size: 0.8em;    /* tăng size chữ */
+    padding: 4px 10px;   /* tăng padding để dropdown cao hơn */
+    border-radius: 6px;  /* bo góc đẹp */
+    border: 1px solid #aaa;
+    outline: none;
+    min-width: 70px;     /* chiều ngang tối thiểu */
+}
+
+#pageSize label{
+    font-size: 0.8em;    /* tăng size chữ */
+}
+
+/* Table alignment styles */
+table td:nth-child(3) {
+  text-align: left;
+}
+table td:not(:nth-child(3)) {
+  text-align: center;
+}
+
+th:nth-child(4), td:nth-child(4),  /* Độ tuổi */
+th:nth-child(5), td:nth-child(5),  /* Thời lượng */
+th:nth-child(6), td:nth-child(6)
+th:nth-child(6), td:nth-child(6){ /* Khởi chiếu */
+  width: 15%;
 }

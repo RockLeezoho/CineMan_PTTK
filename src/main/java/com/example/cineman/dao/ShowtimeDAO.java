@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ShowtimeDAO extends DAO {
     private MovieDAO movieDAO  = new MovieDAO();
 
-    public long getAvailableShowtimeCount(LocalDate currentDate) throws SQLException {
+    public long countAvailableShowtime(LocalDate currentDate) throws SQLException {
         String sql = "SELECT COUNT(*) FROM tblshowtime s WHERE s.showdate >= ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setDate(1, Date.valueOf(currentDate));
@@ -35,11 +35,15 @@ public class ShowtimeDAO extends DAO {
     public List<Showtime> getAvailableShowtimeList(LocalDate currentDate, long offset, int limit) throws SQLException {
         List<Showtime> showtimeList = new ArrayList<>();
         String sql =
-                "SELECT s.id, s.showdate, s.timeslot, s.baseprice, s.tblmovieid, m.title AS movie_title " +
-                        "FROM tblshowtime s " +
-                        "LEFT JOIN tblmovie m ON s.tblmovieid = m.id " +
-                        "WHERE s.showdate >= ? " +
-                        "ORDER BY s.showdate, s.timeslot " +
+                "SELECT s.id, s.showDate, s.timeSlot, s.basePrice, s.tblMovieid, " +
+                        "       m.title AS movie_title, m.description AS movie_description, m.director AS movie_director, " +
+                        "       m.genre AS movie_genre, m.releaseDate AS movie_releaseDate, m.duration AS movie_duration, " +
+                        "       m.language AS movie_language, m.mainCast AS movie_mainCast, m.ageRating AS movie_ageRating, " +
+                        "       m.trailer AS movie_trailer, m.status AS movie_status " +
+                        "FROM tblShowtime s " +
+                        "LEFT JOIN tblMovie m ON s.tblMovieid = m.id " +
+                        "WHERE s.showDate >= ? " +
+                        "ORDER BY s.showDate, s.timeSlot " +
                         "LIMIT ? OFFSET ?";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -48,47 +52,43 @@ public class ShowtimeDAO extends DAO {
             ps.setLong(3, offset);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Showtime showtime = mapShowtimeMinimalFromResultSet(rs);
+                    Showtime showtime = mapShowtimeFromResultSet(rs);
+                    List<Room> rooms = getRoomListByShowtimeId(showtime.getId());
+                    showtime.setRooms(rooms);
                     showtimeList.add(showtime);
                 }
             }
         }
-
-        // Batch load rooms for all showtimes in this page to avoid N+1 queries
-        if (!showtimeList.isEmpty()) {
-            loadRoomsForShowtimes(showtimeList);
-        }
-
         return showtimeList;
     }
 
-    public List<Showtime> getAvailableShowtimeList(LocalDate currentDate) throws SQLException {
-        List<Showtime> showtimeList = new ArrayList<>();
-        String sql =
-                "SELECT s.id, s.showdate, s.timeslot, s.baseprice, s.tblmovieid, m.title AS movie_title " +
-                        "FROM tblshowtime s " +
-                        "LEFT JOIN tblmovie m ON s.tblmovieid = m.id " +
-                        "WHERE s.showdate >= ? " +
-                        "ORDER BY s.showdate, s.timeslot";
+//    public List<Showtime> getAvailableShowtimeList(LocalDate currentDate) throws SQLException {
+//        List<Showtime> showtimeList = new ArrayList<>();
+//        String sql =
+//                "SELECT s.id, s.showdate, s.timeslot, s.baseprice, s.tblmovieid, m.title AS movie_title " +
+//                        "FROM tblshowtime s " +
+//                        "LEFT JOIN tblmovie m ON s.tblmovieid = m.id " +
+//                        "WHERE s.showdate >= ? " +
+//                        "ORDER BY s.showdate, s.timeslot";
+//
+//        try (PreparedStatement ps = con.prepareStatement(sql)) {
+//            ps.setDate(1, Date.valueOf(currentDate));
+//            try (ResultSet rs = ps.executeQuery()) {
+//                while (rs.next()) {
+//                    Showtime showtime = mapShowtimeMinimalFromResultSet(rs);
+//                    showtimeList.add(showtime);
+//                }
+//            }
+//        }
+//
+//        if (!showtimeList.isEmpty()) {
+//            loadRoomsForShowtimes(showtimeList);
+//        }
+//
+//        return showtimeList;
+//    }
 
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setDate(1, Date.valueOf(currentDate));
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Showtime showtime = mapShowtimeMinimalFromResultSet(rs);
-                    showtimeList.add(showtime);
-                }
-            }
-        }
-
-        if (!showtimeList.isEmpty()) {
-            loadRoomsForShowtimes(showtimeList);
-        }
-
-        return showtimeList;
-    }
-
-    private Showtime mapShowtimeMinimalFromResultSet(ResultSet rs) throws SQLException {
+    private Showtime mapShowtimeFromResultSet(ResultSet rs) throws SQLException {
         Showtime showtime = new Showtime();
         showtime.setId(rs.getInt("id"));
 
@@ -120,51 +120,15 @@ public class ShowtimeDAO extends DAO {
         return showtime;
     }
 
-    private void loadRoomsForShowtimes(List<Showtime> showtimes) throws SQLException {
-        if (showtimes == null || showtimes.isEmpty()) return;
-
-        // Tạo danh sách id để dùng trong IN (...)
-        List<Integer> ids = showtimes.stream().map(Showtime::getId).collect(Collectors.toList());
-
-        // Build placeholder (?, ?, ?, ...) với số lượng ids
-        String placeholders = ids.stream().map(id -> "?").collect(Collectors.joining(","));
-        String sql =
-                "SELECT sr.tblshowtimeid, r.id AS room_id, r.roomnumber, r.description " +
-                        "FROM tblshowtimeroom sr " +
-                        "JOIN tblroom r ON r.id = sr.tblroomid " +
-                        "WHERE sr.tblshowtimeid IN (" + placeholders + ") " +
-                        "ORDER BY sr.tblshowtimeid, r.roomnumber";
-
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            int idx = 1;
-            for (Integer id : ids) {
-                ps.setInt(idx++, id);
-            }
-            try (ResultSet rs = ps.executeQuery()) {
-                Map<Integer, List<Room>> map = new HashMap<>();
-                while (rs.next()) {
-                    int showtimeId = rs.getInt("tblshowtimeid");
-                    Room room = new Room();
-                    room.setId(rs.getInt("room_id"));
-                    room.setRoomNumber(rs.getInt("roomnumber"));
-                    room.setDescription(rs.getString("description"));
-                    map.computeIfAbsent(showtimeId, k -> new ArrayList<>()).add(room);
-                }
-                // assign rooms back to showtime objects
-                for (Showtime s : showtimes) {
-                    List<Room> rlist = map.get(s.getId());
-                    if (rlist != null) s.setRooms(rlist);
-                    else s.setRooms(new ArrayList<>()); // empty list if none
-                }
-            }
-        }
-    }
-
     public List<Room> getRoomListByShowtimeId(int showtimeId) throws SQLException {
+        System.out.println("Fetching rooms for showtime ID: " + showtimeId);
+
         List<Room> roomList = new ArrayList<>();
-        String sql = "SELECT r.* FROM tblroom r " +
+        String sql = "SELECT r.* " +
+                "FROM tblroom r " +
                 "JOIN tblshowtimeroom sr ON r.id = sr.tblroomid " +
-                "WHERE sr.tblshowtimeid = ?;";
+                "WHERE sr.tblshowtimeid = ? " +
+                "ORDER BY r.roomnumber;"; // sắp xếp theo số phòng
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, showtimeId);
@@ -180,6 +144,7 @@ public class ShowtimeDAO extends DAO {
         }
         return roomList;
     }
+
 
     public List<Room> getAvailableRoomList(LocalDate showDate, LocalTime timeSlot) throws SQLException {
         List<Room> roomList = new ArrayList<>();

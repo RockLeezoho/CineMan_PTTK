@@ -24,7 +24,7 @@ public class ShowtimeServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if (action == null){
-            action = "manageShowtimes";
+            action = "addShowtimes";
         }
         try{
             switch (action) {
@@ -59,12 +59,7 @@ public class ShowtimeServlet extends HttpServlet{
                     req.setAttribute("date", date);
                     req.setAttribute("time", time);
                     req.setAttribute("availableRoomList", availableRoomList);
-                    req.getRequestDispatcher("/WEB-INF/manager/SelectRoomView.jsp").forward(req, resp);
-                    break;
-                case "selectMovie":
-                    List<Movie> availableMovieList = movieDAO.getAvailableMovieList();
-                    req.setAttribute("availableMovieList", availableMovieList);
-                    req.getRequestDispatcher("/WEB-INF/manager/SelectMovieView.jsp").forward(req, resp);
+                    req.getRequestDispatcher("/WEB-INF/manager/AddShowtimesView.jsp").forward(req, resp);
                     break;
                 case "deleteTempShowtime":
                     HttpSession session = req.getSession();
@@ -82,11 +77,7 @@ public class ShowtimeServlet extends HttpServlet{
                     resp.sendRedirect("showtimes?action=addShowtimes");
                     break;
                 default:
-                    req.getSession().removeAttribute("tempShowtimes");
-
-                    LocalDate today = LocalDate.now();
-                    req.setAttribute("showtimeList", showtimeDAO.getAvailableShowtimeList(today));
-                    req.getRequestDispatcher("/WEB-INF/manager/ManageShowtimesView.jsp").forward(req, resp);
+                    req.getRequestDispatcher("/WEB-INF/manager/AddShowtimesView.jsp").forward(req, resp);
                     break;
             }
         } catch (Exception e) {

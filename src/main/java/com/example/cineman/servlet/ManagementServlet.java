@@ -42,12 +42,15 @@ public class ManagementServlet extends HttpServlet {
         try {
             if ("searchMovie".equals(action)) {
 
-                long totalMovie = movieDAO.getNowShowingMovieCount();
+                long totalMovie = movieDAO.countNowShowingMovie();
                 int totalPages = (totalMovie == 0) ? 0 : (int) Math.ceil((double) totalMovie / pageSize);
                 long offset = (long) (page - 1) * pageSize;
                 if (offset < 0) offset = 0L;
                 List<Movie> movieList = movieDAO.getNowShowingMovieList(offset, pageSize);
 
+                req.setAttribute("currentPage", page);
+                req.setAttribute("pageSize", pageSize);
+                req.setAttribute("totalPages", totalPages);
                 req.setAttribute("movieList", movieList);
                 req.getRequestDispatcher("/WEB-INF/customer/SearchMovieView.jsp").forward(req, resp);
 
@@ -61,8 +64,8 @@ public class ManagementServlet extends HttpServlet {
                     } catch (Exception ignored) {}
                 }
 
-                long totalShowtime = showtimeDAO.getAvailableShowtimeCount(dateFilter);
-                int totalPages = (totalShowtime == 0) ? 0 : (int) Math.ceil((double) totalShowtime / pageSize);
+                long totalRecords = showtimeDAO.countAvailableShowtime(dateFilter);
+                int totalPages = (totalRecords == 0) ? 0 : (int) Math.ceil((double) totalRecords / pageSize);
                 if (totalPages > 0 && page > totalPages) page = totalPages;
 
                 long offset = (long) (page - 1) * pageSize;
@@ -70,16 +73,15 @@ public class ManagementServlet extends HttpServlet {
 
                 List<Showtime> showtimeList = showtimeDAO.getAvailableShowtimeList(dateFilter, offset, pageSize);
 
-                List<Object> pageButtons = buildPageButtons(page, totalPages, 7);
+                System.out.println("Total showtime pages: " + totalPages);
+                System.out.println("Total showtimes: " + showtimeList.size());
 
                 // set attributes for JSP
                 req.setAttribute("showtimeList", showtimeList);
-                req.setAttribute("total", totalShowtime);
                 req.setAttribute("currentPage", page);
                 req.setAttribute("pageSize", pageSize);
+                req.setAttribute("totalRecords", totalRecords);
                 req.setAttribute("totalPages", totalPages);
-                req.setAttribute("pageButtons", pageButtons);
-                req.setAttribute("dateFilter", dateFilter.toString());
 
                 req.getRequestDispatcher("/WEB-INF/manager/ManageShowtimesView.jsp").forward(req, resp);
             } else {

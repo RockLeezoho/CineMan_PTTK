@@ -10,22 +10,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * MovieDAO - mở rộng hỗ trợ phân trang và count cho tìm kiếm.
- *
- * Thay đổi chính:
- * - Thêm mapMovieFromResultSet(...) để tránh lặp code và xử lý NULL for releasedate.
- * - Thêm countSearch(String title) để trả về tổng số record phù hợp với tiêu đề (dùng khi paginate search).
- * - Thêm searchMovieByTitle(String title, long offset, int limit) để trả về page kết quả với LIMIT/OFFSET.
- * - Giữ lại searchMovieByTitle(String title) (full list) để tương thích với code cũ.
- * - Cập nhật getNowShowingMovieList(...) và getMovieDetail(...) để dùng mapMovieFromResultSet.
- *
- * Lưu ý:
- * - SQL pagination dùng LIMIT ? OFFSET ? (MySQL/MariaDB). Nếu DB khác, chỉnh lại SQL cho phù hợp.
- */
 public class MovieDAO extends DAO{
 
-    public long getNowShowingMovieCount() throws SQLException {
+    public long countNowShowingMovie() throws SQLException {
         String sql = "SELECT COUNT(*) FROM tblmovie WHERE status = 'now_showing'";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -65,16 +52,29 @@ public class MovieDAO extends DAO{
         return movie;
     }
 
-    public List<Movie> getAvailableMovieList() throws SQLException {
-        List<Movie> movieList = new ArrayList<>();
-        String sql = "SELECT * FROM tblmovie WHERE status IN ('now_showing', 'upcoming') ORDER BY id DESC";
-        try (
-                PreparedStatement ps = con.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery();) {
+    public long countAvailableMovie() throws SQLException {
 
-            while (rs.next()) {
-                Movie movie = mapMovieFromResultSet(rs);
-                movieList.add(movie);
+        String sql = "SELECT COUNT(*) FROM tblmovie WHERE status IN ('now_showing', 'upcoming')";
+        try (PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();) {
+                if (rs.next()) return rs.getLong(1);
+        }
+        return 0L;
+    }
+
+    public List<Movie> getAvailableMovieList(long offset, int limit) throws SQLException {
+        List<Movie> movieList = new ArrayList<>();
+        String sql = "SELECT * FROM tblmovie WHERE status IN ('now_showing', 'upcoming') "
+                + "ORDER BY id DESC "
+                + "LIMIT ? OFFSET ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            ps.setLong(2, offset);
+            try(ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Movie movie = mapMovieFromResultSet(rs);
+                    movieList.add(movie);
+                }
             }
         }
         return movieList;
