@@ -67,6 +67,7 @@ CREATE TABLE tblRoom (
 
 
 CREATE TABLE tblShowtimeRoom (
+    id SERIAL PRIMARY KEY,
     tblRoomid INT NOT NULL REFERENCES tblRoom(id),
     tblShowtimeid INT NOT NULL REFERENCES tblShowtime(id)
 );
@@ -85,7 +86,7 @@ CREATE TABLE tblShowSeat (
     id SERIAL PRIMARY KEY,
     isReserved BOOLEAN NOT NULL DEFAULT FALSE,
     tblSeatid INT NOT NULL REFERENCES tblSeat(id),
-    tblShowtimeid INT NOT NULL REFERENCES tblShowtime(id)
+    tblShowtimeRoomid INT NOT NULL REFERENCES tblShowtimeRoom(id)
 );
 
 CREATE TABLE tblInvoice (

@@ -1,8 +1,6 @@
 package com.example.cineman.servlet;
 
-import com.example.cineman.dao.MovieDAO;
 import com.example.cineman.dao.ShowtimeDAO;
-import com.example.cineman.model.Movie;
 import com.example.cineman.model.Room;
 import com.example.cineman.model.Showtime;
 
@@ -18,7 +16,6 @@ import java.util.List;
 @WebServlet(name="ShowtimeServlet", value="/showtimes")
 public class ShowtimeServlet extends HttpServlet{
     private ShowtimeDAO showtimeDAO = new ShowtimeDAO();
-    private MovieDAO movieDAO = new MovieDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

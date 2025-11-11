@@ -62,32 +62,6 @@ public class ShowtimeDAO extends DAO {
         return showtimeList;
     }
 
-//    public List<Showtime> getAvailableShowtimeList(LocalDate currentDate) throws SQLException {
-//        List<Showtime> showtimeList = new ArrayList<>();
-//        String sql =
-//                "SELECT s.id, s.showdate, s.timeslot, s.baseprice, s.tblmovieid, m.title AS movie_title " +
-//                        "FROM tblshowtime s " +
-//                        "LEFT JOIN tblmovie m ON s.tblmovieid = m.id " +
-//                        "WHERE s.showdate >= ? " +
-//                        "ORDER BY s.showdate, s.timeslot";
-//
-//        try (PreparedStatement ps = con.prepareStatement(sql)) {
-//            ps.setDate(1, Date.valueOf(currentDate));
-//            try (ResultSet rs = ps.executeQuery()) {
-//                while (rs.next()) {
-//                    Showtime showtime = mapShowtimeMinimalFromResultSet(rs);
-//                    showtimeList.add(showtime);
-//                }
-//            }
-//        }
-//
-//        if (!showtimeList.isEmpty()) {
-//            loadRoomsForShowtimes(showtimeList);
-//        }
-//
-//        return showtimeList;
-//    }
-
     private Showtime mapShowtimeFromResultSet(ResultSet rs) throws SQLException {
         Showtime showtime = new Showtime();
         showtime.setId(rs.getInt("id"));
